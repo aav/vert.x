@@ -10,11 +10,27 @@
 (def vertx org.vertx.java.deploy.impl.VertxLocator/vertx)
 (def server (.createNetServer vertx))
 
-(def handler
-  (reify org.vertx.java.core.Handler
-    (handle [this e] (println "**** HANDLE" e))))
+(defmacro handle
+  [bindings body]
+  `(reify org.vertx.java.core.Handler 
+     (handle ~bindings ~body)))
 
-(.connectHandler server handler)
+
+(def plain-sayhi
+  (reify org.vertx.java.core.Handler
+    (handle [this socket]
+      (.write socket "hello\n"
+              (reify org.vertx.java.core.Handler
+                (handle [this _]
+                  (.close socket)))))))
+
+(def sayhi
+  (handle [this socket]
+    (.write socket "Hello, macro!\n"
+            (handle [this _]
+              (.close socket)))))
+
+(.connectHandler server sayhi)
 (.listen server 1234 "localhost")
 
 (println "listening on localhost:1234")
