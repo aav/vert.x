@@ -21,6 +21,7 @@ import org.vertx.java.deploy.Verticle;
 import org.vertx.java.deploy.VerticleFactory;
 import org.vertx.java.deploy.impl.VerticleManager;
 
+
 public class ClojureVerticleFactory
     implements VerticleFactory
 {
@@ -34,7 +35,9 @@ public class ClojureVerticleFactory
         this.mgr = mgr;
     }
 
-    public Verticle createVerticle(String main, ClassLoader cl) throws Exception {
+    public Verticle createVerticle(String main, ClassLoader cl)
+            throws Exception
+    {
         return new ClojureVerticle(main, cl);
     }
 

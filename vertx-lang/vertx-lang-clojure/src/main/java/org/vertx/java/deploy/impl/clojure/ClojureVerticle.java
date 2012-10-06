@@ -20,26 +20,31 @@ import org.vertx.java.core.logging.Logger;
 import org.vertx.java.core.logging.impl.LoggerFactory;
 import org.vertx.java.deploy.Verticle;
 
+import clojure.lang.RT;
+
 public class ClojureVerticle
-  extends Verticle
+        extends Verticle
 {
-  private static final Logger log = LoggerFactory.getLogger(ClojureVerticle.class);
+    private static final Logger log = LoggerFactory.getLogger(ClojureVerticle.class);
 
-  private final ClassLoader cl;
-  private final String scriptName;
+    private final ClassLoader cl;
+    private final String scriptName;
 
-  ClojureVerticle(String scriptName, ClassLoader cl) {
-    this.cl = cl;
-    this.scriptName = scriptName;
-  }
+    ClojureVerticle(String scriptName, ClassLoader cl) {
+        this.cl = cl;
+        this.scriptName = scriptName;
+    }
 
-  public void start() throws Exception {
-      System.out.println("CLOJURE VERTICLE START: " + scriptName);
-      // TODO - objviously we need to do something here
-  }
+    public void start() throws Exception {
+        System.out.println("CLOJURE VERTICLE START: " + scriptName);
 
-  public void stop() throws Exception {
-      System.out.println("CLOJURE VERTICLE STOP: " + scriptName);
-      // TODO - objviously we need to do something here
-  }
+        RT.loadResourceScript(scriptName);
+
+        System.out.println("...loadResourceScript returned");
+    }
+
+    public void stop() throws Exception {
+        System.out.println("CLOJURE VERTICLE STOP: " + scriptName);
+        // TODO - objviously we need to do something here
+    }
 }
