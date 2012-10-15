@@ -7,30 +7,25 @@
 ;; to test, add clojure JAR to APP_HOME/lib
 ;; (for dev build/vert.x-1.2.3.final/lib)
 
-(def vertx org.vertx.java.deploy.impl.VertxLocator/vertx)
-(def server (.createNetServer vertx))
 
-(defmacro handle
-  [bindings body]
-  `(reify org.vertx.java.core.Handler 
-     (handle ~bindings ~body)))
+(println "config is" (. container getConfig))
 
-
-(def plain-sayhi
-  (reify org.vertx.java.core.Handler
-    (handle [this socket]
-      (.write socket "hello\n"
-              (reify org.vertx.java.core.Handler
-                (handle [this _]
-                  (.close socket)))))))
-
-(def sayhi
-  (handle [this socket]
-    (.write socket "Hello, macro!\n"
+(.runOnLoop vertx
             (handle [this _]
-              (.close socket)))))
+              (println "on loop")))
 
-(.connectHandler server sayhi)
-(.listen server 1234 "localhost")
+(.setPeriodic vertx 15000
+              (handle [this id]
+                (println "timer" id)))
 
-(println "listening on localhost:1234")
+
+
+(def config (new org.vertx.java.core.json.JsonObject
+                 {"a" 1 "b" 2 :c 3 :hello ["this" "is"  \a "test"]}))
+
+
+(-> container
+    (deployVerticle "simple1.clj" config)
+    (deployVerticle "simple2.clj"))
+
+
