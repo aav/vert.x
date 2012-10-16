@@ -12,12 +12,21 @@
   `(reify org.vertx.java.core.Handler
      (handle ~bindings ~@body)))
 
-;; deployModule
-;; deployWorkerVerticle
 ;; undeployModule
 ;; undeployWorkerVerticle
 ;; undeployVerticle
+(defmacro deployModule [container & args]
+  `(do
+     (.deployModule ~container  ~@args)
+     container))
+
 (defmacro deployVerticle [container & args]
   `(do
      (.deployVerticle ~container  ~@args)
      container))
+
+(defmacro deployWorkerVerticle [container & args]
+  `(do
+     (.deployWorkerVerticle ~container  ~@args)
+     container))
+
