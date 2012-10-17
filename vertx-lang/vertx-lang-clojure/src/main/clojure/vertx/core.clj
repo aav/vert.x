@@ -12,6 +12,11 @@
   `(reify org.vertx.java.core.Handler
      (handle ~bindings ~@body)))
 
+
+(defmacro defhandle
+  [name & rest]
+  `(def ~name (handle ~@rest)))
+
 ;; undeployModule
 ;; undeployWorkerVerticle
 ;; undeployVerticle
